@@ -1,151 +1,85 @@
-import { useState, useEffect, useRef } from "react";
 import { AutoSizer, List, type ListRowProps } from "react-virtualized";
+import { useMatches, MatchesProvider } from "./contexts/MatchesContext";
 import "./App.css";
+import { useEffect, useState, type CSSProperties } from "react";
+import BettingOddsButton from "./components/BettingOddsButton";
 
-interface Match {
-  id: number;
-  team1_id: string;
-  team2_id: string;
-  team1_score: number;
-  team2_score: number;
-  sport: string;
-  start_time: string;
-  status: string;
-  home_win_probability: number;
-  betting_1x2_home_win: number;
-  betting_1x2_draw: number;
-  betting_1x2_away_win: number;
-  betting_double_chance_home_win_draw: number;
-  betting_double_chance_away_win_draw: number;
-  betting_double_chance_home_win_away_win: number;
-  betting_over_under_2_5_goals_over: number;
-  betting_over_under_2_5_goals_under: number;
-  created_at: string;
-  updated_at: string;
-}
+const roundToTwoDecimals = (num = 0) => {
+  return Math.round(num * 100) / 100;
+};
 
-function App() {
-  const [matchesIds, setMatchesIds] = useState<number[]>([]);
-  const [matchesMap, setMatchesMap] = useState<Map<number, Match>>(new Map());
-  const [isConnected, setIsConnected] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const wsRef = useRef<WebSocket | null>(null);
+const Row: React.FC<{ index: number; style: CSSProperties }> = ({
+  style,
+  index,
+}) => {
+  const { matchesMap, matchesIds } = useMatches();
+  const match = matchesMap.get(matchesIds[index]);
 
-  useEffect(() => {
-    // Create WebSocket connection
-    const ws = new WebSocket("ws://localhost:3000");
-    wsRef.current = ws;
+  if (!match) {
+    return null; // or a loading spinner
+  }
 
-    // Connection opened
-    ws.addEventListener("open", () => {
-      console.log("Connected to WebSocket server");
-      setIsConnected(true);
-      setError(null);
-    });
-
-    // Listen for messages
-    ws.addEventListener("message", (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        if (Array.isArray(data.data.data)) {
-          setMatchesMap((prevMap) => {
-            const newMap = new Map(prevMap);
-            data.data.data.forEach((match: Match) => {
-              newMap.set(match.id, match);
-            });
-
-            const deletedIds: Record<string, boolean> = {};
-
-            // Remove matches with status "finished" from the map
-            Array.from(newMap.keys()).forEach((id) => {
-              const match = newMap.get(id);
-              if (match && match.status === "finished") {
-                newMap.delete(id);
-                deletedIds[id] = true;
-              }
-            });
-
-            setMatchesIds((prevIds) => {
-              const newIds = data.data.data
-                .filter((match: Match) => match.status !== "finished")
-                .map((match: Match) => match.id);
-              const updatedIds = new Set([
-                ...prevIds.filter((id) => !deletedIds[id]),
-                ...newIds,
-              ]);
-              return Array.from(updatedIds);
-            });
-
-            return newMap;
-          });
-        }
-      } catch (err) {
-        console.error("Error parsing WebSocket data:", err);
-      }
-    });
-
-    // Handle errors
-    // ws.addEventListener("error", (event) => {
-    //   console.error("WebSocket error:", event);
-    //   setError("Error connecting to WebSocket server");
-    // });
-
-    // Handle disconnection
-    ws.addEventListener("close", () => {
-      console.log("Disconnected from WebSocket server");
-      setIsConnected(false);
-    });
-
-    // Clean up on unmount
-    return () => {
-      if (
-        ws.readyState === WebSocket.OPEN ||
-        ws.readyState === WebSocket.CONNECTING
-      ) {
-        ws.close();
-      }
-    };
-  }, []);
-
-  // Row renderer for virtualized list
-  const rowRenderer = ({ index, key, style }: ListRowProps) => {
-    const match = matchesMap.get(matchesIds[index]);
-    if (!match) {
-      return null; // or a loading spinner
-    }
-
-    return (
-      <div key={key} style={style} className="match-row">
-        <div className="match-header">
-          <span className="match-sport">{match.sport}</span>
-          <span className="match-status">{match.status}</span>
-          <span className="match-time">
-            {new Date(match.start_time).toLocaleString()}
-          </span>
+  return (
+    <div style={style} className="match-row">
+      <div className="match-header">
+        <span className="match-sport">
+          <img src={`${match.sport}-icon.svg`} alt={match.sport} />
+          &nbsp;{match.sport}
+        </span>
+        <span className="match-status">{match.status}</span>
+        <span className="match-time">
+          {new Date(match.start_time).toLocaleString()}
+        </span>
+      </div>
+      <div className="match-teams">
+        <span>{match.team1_id}</span>
+        <span className="match-score">
+          {match.team1_score} - {match.team2_score}
+        </span>
+        <span>{match.team2_id}</span>
+      </div>
+      <div className="match-odds">
+        <div className="odds-group">
+          <span className="odds-label">1X2:</span>
+          <BettingOddsButton
+            odds={roundToTwoDecimals(match.betting_1x2_home_win)}
+          />
+          <BettingOddsButton
+            odds={roundToTwoDecimals(match.betting_1x2_draw)}
+          />
+          <BettingOddsButton
+            odds={roundToTwoDecimals(match.betting_1x2_away_win)}
+          />
         </div>
-        <div className="match-teams">
-          <span>{match.team1_id}</span>
-          <span className="match-score">
-            {match.team1_score} - {match.team2_score}
-          </span>
-          <span>{match.team2_id}</span>
-        </div>
-        <div className="match-odds">
-          <div className="odds-group">
-            <span className="odds-label">1X2:</span>
-            <span>{match.betting_1x2_home_win}</span>
-            <span>{match.betting_1x2_draw}</span>
-            <span>{match.betting_1x2_away_win}</span>
-          </div>
-          <div className="odds-group">
-            <span className="odds-label">Over/Under 2.5:</span>
-            <span>{match.betting_over_under_2_5_goals_over}</span>
-            <span>{match.betting_over_under_2_5_goals_under}</span>
-          </div>
+        <div className="odds-group">
+          <span className="odds-label">Over/Under 2.5:</span>
+          <BettingOddsButton
+            odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_over)}
+          />
+          <BettingOddsButton
+            odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_under)}
+          />
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
+const rowRenderer = ({ key, ...props }: ListRowProps) => (
+  <Row key={key} {...props} />
+);
+
+function MatchesList() {
+  const { matchesIds, isConnected, error } = useMatches();
+  const [scrollTop, setScrollTop] = useState(
+    +(sessionStorage.getItem("scrollTop") || "0")
+  );
+
+  useEffect(() => {
+    sessionStorage.setItem("scrollTop", scrollTop.toString());
+  }, [scrollTop]);
+
+  const rowHeight = 240;
 
   return (
     <div className="app-container">
@@ -170,9 +104,13 @@ function App() {
                 width={width}
                 height={height}
                 rowCount={matchesIds.length}
-                rowHeight={120}
+                rowHeight={rowHeight}
                 rowRenderer={rowRenderer}
                 overscanRowCount={10}
+                scrollTop={scrollTop}
+                onScroll={({ scrollTop }) => {
+                  setScrollTop(scrollTop);
+                }}
               />
             )}
           </AutoSizer>
@@ -185,6 +123,14 @@ function App() {
         )}
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <MatchesProvider>
+      <MatchesList />
+    </MatchesProvider>
   );
 }
 
