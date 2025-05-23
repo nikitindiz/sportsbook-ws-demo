@@ -1,0 +1,12 @@
+.betting-odds-button {
+  border: 2px solid rgba(0, 0, 0, 0);
+  transition: border-color 0.3s;
+}
+
+.betting-odds-button.odds-increased {
+  border: 2px solid green;
+}
+
+.betting-odds-button.odds-decreased {
+  border: 2px solid red;
+}
