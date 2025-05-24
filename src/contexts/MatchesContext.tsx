@@ -53,8 +53,9 @@ export function MatchesProvider({
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<number | null>(null);
 
-  useEffect(() => {
+  const connectWebSocket = () => {
     // Create WebSocket connection
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
@@ -107,19 +108,41 @@ export function MatchesProvider({
       }
     });
 
+    // Handle errors
+    ws.addEventListener("error", (event) => {
+      console.error("WebSocket error:", event);
+      setError("WebSocket connection error");
+    });
+
     // Handle disconnection
     ws.addEventListener("close", () => {
       console.log("Disconnected from WebSocket server");
       setIsConnected(false);
+
+      // Schedule reconnection after 5 seconds
+      reconnectTimeoutRef.current = window.setTimeout(() => {
+        console.log("Attempting to reconnect...");
+        connectWebSocket();
+      }, 5000);
     });
+  };
+
+  useEffect(() => {
+    connectWebSocket();
 
     // Clean up on unmount
     return () => {
       if (
-        ws.readyState === WebSocket.OPEN ||
-        ws.readyState === WebSocket.CONNECTING
+        wsRef.current &&
+        (wsRef.current.readyState === WebSocket.OPEN ||
+          wsRef.current.readyState === WebSocket.CONNECTING)
       ) {
-        ws.close();
+        wsRef.current.close();
+      }
+
+      // Clear any pending reconnection attempt
+      if (reconnectTimeoutRef.current !== null) {
+        clearTimeout(reconnectTimeoutRef.current);
       }
     };
   }, [wsUrl]);

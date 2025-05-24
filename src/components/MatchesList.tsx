@@ -17,6 +17,12 @@ export const MatchesList: React.FC = () => {
     sessionStorage.setItem("scrollTop", scrollTop.toString());
   }, [scrollTop]);
 
+  useEffect(() => {
+    if (error) {
+      console.error("WebSocket error:", error);
+    }
+  }, [error]);
+
   const rowHeight = 240;
 
   return (
@@ -29,9 +35,8 @@ export const MatchesList: React.FC = () => {
           {isConnected ? (
             <span className={styles.connected}>Connected</span>
           ) : (
-            <span className={styles.disconnected}>Disconnected</span>
+            <span className={styles.disconnected}>Connecting</span>
           )}
-          {error && <div className={styles.errorMessage}>{error}</div>}
         </div>
       </header>
 

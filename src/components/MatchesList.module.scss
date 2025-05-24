@@ -12,6 +12,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  h1 {
+    @media screen and (max-width: 680px) {
+      font-size: 1.5rem;
+    }
+    @media screen and (max-width: 420px) {
+      font-size: 0.8rem;
+    }
+  }
 }
 
 .connectionStatus {

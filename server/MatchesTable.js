@@ -211,7 +211,7 @@ export function generateTeamNames(count = 20000) {
       for (let postfixGroup of postfixes) {
         for (let postfix of postfixGroup) {
           if (teams.size >= count) break;
-          teams.add(`${adj} ${noun} ${postfix}`);
+          teams.add(`${noun} ${postfix}`);
         }
         if (teams.size >= count) break;
       }
@@ -235,7 +235,14 @@ export function generateTeamNames(count = 20000) {
     }
   }
 
-  return Array.from(teams).slice(0, count);
+  // Shuffle teams before returning
+  const teamsArray = Array.from(teams);
+  // Fisher-Yates shuffle algorithm
+  for (let i = teamsArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [teamsArray[i], teamsArray[j]] = [teamsArray[j], teamsArray[i]];
+  }
+  return teamsArray.slice(0, count);
 }
 
 export class MatchesTable {
