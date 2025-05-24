@@ -1,76 +1,16 @@
-import { AutoSizer, List, type ListRowProps } from "react-virtualized";
-import { useMatches, MatchesProvider } from "./contexts/MatchesContext";
+import { useEffect, useState } from "react";
+import { AutoSizer, List } from "react-virtualized";
+
 import "./App.css";
-import { useEffect, useState, type CSSProperties } from "react";
-import BettingOddsButton from "./components/BettingOddsButton";
 
-const roundToTwoDecimals = (num = 0) => {
-  return Math.round(num * 100) / 100;
-};
-
-const Row: React.FC<{ index: number; style: CSSProperties }> = ({
-  style,
-  index,
-}) => {
-  const { matchesMap, matchesIds } = useMatches();
-  const match = matchesMap.get(matchesIds[index]);
-
-  if (!match) {
-    return null; // or a loading spinner
-  }
-
-  return (
-    <div style={style} className="match-row">
-      <div className="match-header">
-        <span className="match-sport">
-          <img src={`${match.sport}-icon.svg`} alt={match.sport} />
-          &nbsp;{match.sport}
-        </span>
-        <span className="match-status">{match.status}</span>
-        <span className="match-time">
-          {new Date(match.start_time).toLocaleString()}
-        </span>
-      </div>
-      <div className="match-teams">
-        <span>{match.team1_id}</span>
-        <span className="match-score">
-          {match.team1_score} - {match.team2_score}
-        </span>
-        <span>{match.team2_id}</span>
-      </div>
-      <div className="match-odds">
-        <div className="odds-group">
-          <span className="odds-label">1X2:</span>
-          <BettingOddsButton
-            odds={roundToTwoDecimals(match.betting_1x2_home_win)}
-          />
-          <BettingOddsButton
-            odds={roundToTwoDecimals(match.betting_1x2_draw)}
-          />
-          <BettingOddsButton
-            odds={roundToTwoDecimals(match.betting_1x2_away_win)}
-          />
-        </div>
-        <div className="odds-group">
-          <span className="odds-label">Over/Under 2.5:</span>
-          <BettingOddsButton
-            odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_over)}
-          />
-          <BettingOddsButton
-            odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_under)}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const rowRenderer = ({ key, ...props }: ListRowProps) => (
-  <Row key={key} {...props} />
-);
+import { MatchesProvider } from "./contexts/MatchesContext";
+import { SelectedOddsProvider } from "./contexts/SelectedOddsContext";
+import { useMatches } from "./hooks/useMatches";
+import { rowRenderer } from "./components/MatchRow";
 
 function MatchesList() {
   const { matchesIds, isConnected, error } = useMatches();
+
   const [scrollTop, setScrollTop] = useState(
     +(sessionStorage.getItem("scrollTop") || "0")
   );
@@ -126,10 +66,16 @@ function MatchesList() {
   );
 }
 
+const wsUrl = import.meta.env.PROD
+  ? "wss://ws-test.nikitin-alex.com"
+  : "ws://localhost:3000";
+
 function App() {
   return (
-    <MatchesProvider>
-      <MatchesList />
+    <MatchesProvider wsUrl={wsUrl}>
+      <SelectedOddsProvider>
+        <MatchesList />
+      </SelectedOddsProvider>
     </MatchesProvider>
   );
 }

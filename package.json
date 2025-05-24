@@ -1,21 +1,23 @@
 {
   "name": "sportsbook-ws",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node server/www & vite",
+    "build": "tsc -b && vite build && npm run build-server",
+    "build-server": "node util/build-server.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
     "@types/react-virtualized": "^9.22.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-virtualized": "^9.22.6"
-  },
-  "devDependencies": {
+    "react-virtualized": "^9.22.6",
     "@eslint/js": "^9.25.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",

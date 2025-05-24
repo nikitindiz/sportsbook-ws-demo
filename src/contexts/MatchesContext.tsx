@@ -1,6 +1,5 @@
 import {
   createContext,
-  useContext,
   useState,
   useEffect,
   useRef,
@@ -9,8 +8,8 @@ import {
 
 export interface Match {
   id: number;
-  team1_id: string;
-  team2_id: string;
+  team1_name: string;
+  team2_name: string;
   team1_score: number;
   team2_score: number;
   sport: string;
@@ -36,15 +35,9 @@ interface MatchesContextType {
   error: string | null;
 }
 
-const MatchesContext = createContext<MatchesContextType | undefined>(undefined);
-
-export function useMatches() {
-  const context = useContext(MatchesContext);
-  if (!context) {
-    throw new Error("useMatches must be used within a MatchesProvider");
-  }
-  return context;
-}
+export const MatchesContext = createContext<MatchesContextType | undefined>(
+  undefined
+);
 
 interface MatchesProviderProps {
   children: ReactNode;
@@ -77,10 +70,10 @@ export function MatchesProvider({
     ws.addEventListener("message", (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (Array.isArray(data.data.data)) {
+        if (Array.isArray(data.data)) {
           setMatchesMap((prevMap) => {
             const newMap = new Map(prevMap);
-            data.data.data.forEach((match: Match) => {
+            data.data.forEach((match: Match) => {
               newMap.set(match.id, match);
             });
 
@@ -96,7 +89,7 @@ export function MatchesProvider({
             });
 
             setMatchesIds((prevIds) => {
-              const newIds = data.data.data
+              const newIds = data.data
                 .filter((match: Match) => match.status !== "finished")
                 .map((match: Match) => match.id);
               const updatedIds = new Set([
