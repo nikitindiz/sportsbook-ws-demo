@@ -66,7 +66,7 @@ function broadcastMatchUpdates(data) {
   console.log(`Broadcasted match updates to ${wss.clients.size} clients`);
 }
 
-const table = new MatchesTable(100, 10); // Smaller numbers for easier testing
+const table = new MatchesTable(10000, 5000);
 
 table.onInitialize((initialMatches) => {
   broadcastMatchUpdates(initialMatches);
@@ -89,7 +89,7 @@ wss.on("connection", async (ws, request) => {
         timestamp: new Date().toISOString(),
       })
     );
-    console.log(`Sent ${currentMatches.length} matches to new client`);
+    console.log(`Sent ${table.matchesData.length} matches to new client`);
   } catch (error) {
     console.error("Error sending initial matches to client:", error);
   }

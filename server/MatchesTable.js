@@ -424,25 +424,3 @@ export class MatchesTable {
     });
   }
 }
-
-// Example usage (optional, for testing):
-/*
-const table = new MatchesTable(100, 50); // Smaller numbers for easier testing
-
-table.onInitialize(initialMatches => {
-    console.log(`Initialized ${initialMatches.length} matches.`);
-    // console.log("First match:", initialMatches[0]);
-});
-
-let updateCount = 0;
-table.onUpdate(updatedMatches => {
-    updateCount++;
-    console.log(`Update #${updateCount}: ${updatedMatches.length} matches updated.`);
-    // if (updatedMatches.length > 0) {
-    //     console.log("First updated match in this batch:", updatedMatches[0]);
-    // }
-});
-*/
-
-// For Node.js environment, you might want to export the class:
-// module.exports = MatchesTable;
