@@ -25,6 +25,7 @@ It consists of:
 Use `npm run dev` to run both server and UI on your local machine.
 
 Default UI address: http://localhost:5173
+
 Default WebSocket server address: ws://localhost:3000
 
 Demo deployed to: https://sportsbook-demo.nikitin-alex.com/
