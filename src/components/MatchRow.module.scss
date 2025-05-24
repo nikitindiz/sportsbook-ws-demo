@@ -1,0 +1,65 @@
+.matchRow {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.matchRow:hover {
+  background-color: #f9f9f9;
+}
+
+.matchHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.matchSport {
+  text-transform: uppercase;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 5px;
+  }
+}
+
+.matchStatus {
+  color: #f44336;
+}
+
+.matchTeams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.matchScore {
+  font-size: 1.2rem;
+  background-color: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.matchOdds {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.oddsGroup {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.oddsLabel {
+  color: #666;
+}

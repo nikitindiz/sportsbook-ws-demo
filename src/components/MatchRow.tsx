@@ -1,8 +1,11 @@
 import type { CSSProperties } from "react";
+import type { ListRowProps } from "react-virtualized";
+
+import styles from "./MatchRow.module.scss";
+
 import BettingOddsButton from "./BettingOddsButton";
 import { useMatches } from "../hooks/useMatches";
 import { useSelectedOdds } from "../contexts/SelectedOddsContext";
-import type { ListRowProps } from "react-virtualized";
 import { IconFootball } from "./IconFootball";
 import { IconBasketball } from "./IconBasketball";
 import { IconTennis } from "./IconTennis";
@@ -34,46 +37,51 @@ export const MatchRow: React.FC<{ index: number; style: CSSProperties }> = ({
   }
 
   return (
-    <div style={style} className="match-row">
-      <div className="match-header">
-        <span className="match-sport">
+    <div style={style} className={styles.matchRow}>
+      <div className={styles.matchHeader}>
+        <span className={styles.matchSport}>
           {iconsMap[match.sport as keyof typeof iconsMap] || null}
-          {/* <img src={`/${match.sport}-icon.svg`} alt={match.sport} /> */}
-          &nbsp;{match.sport}
+          {match.sport}
         </span>
-        <span className="match-status">{match.status}</span>
-        <span className="match-time">
+        <span className={styles.matchStatus}>{match.status}</span>
+        <span className={styles.matchTime}>
           {new Date(match.start_time).toLocaleString()}
         </span>
       </div>
-      <div className="match-teams">
+
+      <div className={styles.matchTeams}>
         <span>{match.team1_name}</span>
-        <span className="match-score">
+        <span className={styles.matchScore}>
           {match.team1_score} - {match.team2_score}
         </span>
         <span>{match.team2_name}</span>
       </div>
-      <div className="match-odds">
-        <div className="odds-group">
-          <span className="odds-label">1X2:</span>
+
+      <div className={styles.matchOdds}>
+        <div className={styles.oddsGroup}>
+          <span className={styles.oddsLabel}>1X2:</span>
+
           <BettingOddsButton
             active={selectedOdds.get(match.id) === "betting_1x2_home_win"}
             onClick={() => selectOdds(match.id, "betting_1x2_home_win")}
             odds={roundToTwoDecimals(match.betting_1x2_home_win)}
           />
+
           <BettingOddsButton
             active={selectedOdds.get(match.id) === "betting_1x2_draw"}
             onClick={() => selectOdds(match.id, "betting_1x2_draw")}
             odds={roundToTwoDecimals(match.betting_1x2_draw)}
           />
+
           <BettingOddsButton
             active={selectedOdds.get(match.id) === "betting_1x2_away_win"}
             onClick={() => selectOdds(match.id, "betting_1x2_away_win")}
             odds={roundToTwoDecimals(match.betting_1x2_away_win)}
           />
         </div>
-        <div className="odds-group">
-          <span className="odds-label">Over/Under 2.5:</span>
+
+        <div className={styles.oddsGroup}>
+          <span className={styles.oddsLabel}>Over/Under 2.5:</span>
           <BettingOddsButton
             active={
               selectedOdds.get(match.id) === "betting_over_under_2_5_goals_over"
@@ -83,6 +91,7 @@ export const MatchRow: React.FC<{ index: number; style: CSSProperties }> = ({
             }
             odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_over)}
           />
+
           <BettingOddsButton
             active={
               selectedOdds.get(match.id) ===

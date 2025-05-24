@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { AutoSizer, List } from "react-virtualized";
 
+import styles from "./MatchesList.module.scss";
+
 import { useMatches } from "../hooks/useMatches";
 import { rowRenderer } from "../components/MatchRow";
 
@@ -18,21 +20,22 @@ export const MatchesList: React.FC = () => {
   const rowHeight = 240;
 
   return (
-    <div className="app-container">
-      <header className="app-header">
+    <div className={styles.container}>
+      <header className={styles.header}>
         <h1>Live Sports Matches</h1>
-        <div className="connection-status">
+
+        <div className={styles.connectionStatus}>
           Status:{" "}
           {isConnected ? (
-            <span className="connected">Connected</span>
+            <span className={styles.connected}>Connected</span>
           ) : (
-            <span className="disconnected">Disconnected</span>
+            <span className={styles.disconnected}>Disconnected</span>
           )}
-          {error && <div className="error-message">{error}</div>}
+          {error && <div className={styles.errorMessage}>{error}</div>}
         </div>
       </header>
 
-      <div className="matches-container">
+      <div className={styles.matchesContainer}>
         {matchesIds.length > 0 ? (
           <AutoSizer>
             {({ width, height }) => (
@@ -51,7 +54,7 @@ export const MatchesList: React.FC = () => {
             )}
           </AutoSizer>
         ) : (
-          <div className="no-matches">
+          <div className={styles.noMatches}>
             {isConnected
               ? "Waiting for matches data..."
               : "Connect to view matches"}

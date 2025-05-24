@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import cn from "classnames";
 
-import styles from "./BettingOddsButton.module.scss"; // Assuming you have a CSS file for styles
+import styles from "./BettingOddsButton.module.scss";
 
 interface BettingOddsButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,7 +22,6 @@ const BettingOddsButton: React.FC<BettingOddsButtonProps> = ({
   className,
   active,
   disabled,
-  children,
   ...restProps
 }) => {
   const [changeStatus, setChangeStatus] = useState<OddsChangeStatus>("none");
@@ -47,6 +46,8 @@ const BettingOddsButton: React.FC<BettingOddsButtonProps> = ({
     }
   }, [odds]);
 
+  delete restProps["children"];
+
   return (
     <button
       className={cn(className, {
@@ -60,7 +61,6 @@ const BettingOddsButton: React.FC<BettingOddsButtonProps> = ({
       {...restProps}
     >
       <span className="odds-value">{odds}</span>
-      {children && <div className="additional-content">{children}</div>}
     </button>
   );
 };
