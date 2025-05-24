@@ -61,47 +61,55 @@ export const MatchRow: React.FC<{ index: number; style: CSSProperties }> = ({
         <div className={styles.oddsGroup}>
           <span className={styles.oddsLabel}>1X2:</span>
 
-          <BettingOddsButton
-            active={selectedOdds.get(match.id) === "betting_1x2_home_win"}
-            onClick={() => selectOdds(match.id, "betting_1x2_home_win")}
-            odds={roundToTwoDecimals(match.betting_1x2_home_win)}
-          />
+          <div className={styles.oddsGroupButtons}>
+            <BettingOddsButton
+              active={selectedOdds.get(match.id) === "betting_1x2_home_win"}
+              onClick={() => selectOdds(match.id, "betting_1x2_home_win")}
+              odds={roundToTwoDecimals(match.betting_1x2_home_win)}
+            />
 
-          <BettingOddsButton
-            active={selectedOdds.get(match.id) === "betting_1x2_draw"}
-            onClick={() => selectOdds(match.id, "betting_1x2_draw")}
-            odds={roundToTwoDecimals(match.betting_1x2_draw)}
-          />
+            <BettingOddsButton
+              active={selectedOdds.get(match.id) === "betting_1x2_draw"}
+              onClick={() => selectOdds(match.id, "betting_1x2_draw")}
+              odds={roundToTwoDecimals(match.betting_1x2_draw)}
+            />
 
-          <BettingOddsButton
-            active={selectedOdds.get(match.id) === "betting_1x2_away_win"}
-            onClick={() => selectOdds(match.id, "betting_1x2_away_win")}
-            odds={roundToTwoDecimals(match.betting_1x2_away_win)}
-          />
+            <BettingOddsButton
+              active={selectedOdds.get(match.id) === "betting_1x2_away_win"}
+              onClick={() => selectOdds(match.id, "betting_1x2_away_win")}
+              odds={roundToTwoDecimals(match.betting_1x2_away_win)}
+            />
+          </div>
         </div>
 
         <div className={styles.oddsGroup}>
           <span className={styles.oddsLabel}>Over/Under 2.5:</span>
-          <BettingOddsButton
-            active={
-              selectedOdds.get(match.id) === "betting_over_under_2_5_goals_over"
-            }
-            onClick={() =>
-              selectOdds(match.id, "betting_over_under_2_5_goals_over")
-            }
-            odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_over)}
-          />
 
-          <BettingOddsButton
-            active={
-              selectedOdds.get(match.id) ===
-              "betting_over_under_2_5_goals_under"
-            }
-            onClick={() =>
-              selectOdds(match.id, "betting_over_under_2_5_goals_under")
-            }
-            odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_under)}
-          />
+          <div className={styles.oddsGroupButtons}>
+            <BettingOddsButton
+              active={
+                selectedOdds.get(match.id) ===
+                "betting_over_under_2_5_goals_over"
+              }
+              onClick={() =>
+                selectOdds(match.id, "betting_over_under_2_5_goals_over")
+              }
+              odds={roundToTwoDecimals(match.betting_over_under_2_5_goals_over)}
+            />
+
+            <BettingOddsButton
+              active={
+                selectedOdds.get(match.id) ===
+                "betting_over_under_2_5_goals_under"
+              }
+              onClick={() =>
+                selectOdds(match.id, "betting_over_under_2_5_goals_under")
+              }
+              odds={roundToTwoDecimals(
+                match.betting_over_under_2_5_goals_under
+              )}
+            />
+          </div>
         </div>
       </div>
     </div>
