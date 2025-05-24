@@ -1,4 +1,6 @@
-# Live Sports Matches App
+# Live Sports Matches App Demo
+
+<img src="demo.png">
 
 This project contains demo app to display live sports matches. It consists of:
 
