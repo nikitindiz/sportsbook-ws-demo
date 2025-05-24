@@ -134,6 +134,5 @@ server.listen(PORT, () => {
 // Handle server shutdown
 process.on("SIGINT", () => {
   console.log("Shutting down server...");
-  matchesManager.stop();
   process.exit(0);
 });
