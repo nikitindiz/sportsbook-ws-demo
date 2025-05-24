@@ -4,8 +4,9 @@ import React, {
   useEffect,
   useRef,
 } from "react";
+import cn from "classnames";
 
-import "./BettingOddsButton.css"; // Assuming you have a CSS file for styles
+import styles from "./BettingOddsButton.module.scss"; // Assuming you have a CSS file for styles
 
 interface BettingOddsButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -48,11 +49,13 @@ const BettingOddsButton: React.FC<BettingOddsButtonProps> = ({
 
   return (
     <button
-      className={`betting-odds-button ${active ? "active" : ""} ${
-        disabled ? "disabled" : ""
-      } ${changeStatus === "increased" ? "odds-increased" : ""} ${
-        changeStatus === "decreased" ? "odds-decreased" : ""
-      } ${className || ""}`}
+      className={cn(className, {
+        [styles.button]: true,
+        [styles.button_active]: active,
+        [styles.button_disabled]: disabled,
+        [styles.button_oddsIncreased]: changeStatus === "increased",
+        [styles.button_oddsDecreased]: changeStatus === "decreased",
+      })}
       disabled={disabled}
       {...restProps}
     >

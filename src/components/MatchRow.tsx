@@ -3,6 +3,19 @@ import BettingOddsButton from "./BettingOddsButton";
 import { useMatches } from "../hooks/useMatches";
 import { useSelectedOdds } from "../contexts/SelectedOddsContext";
 import type { ListRowProps } from "react-virtualized";
+import { IconFootball } from "./IconFootball";
+import { IconBasketball } from "./IconBasketball";
+import { IconTennis } from "./IconTennis";
+import { IconBaseball } from "./IconBaseball";
+import { IconHockey } from "./IconHockey";
+
+const iconsMap = {
+  football: <IconFootball />,
+  basketball: <IconBasketball />,
+  tennis: <IconTennis />,
+  baseball: <IconBaseball />,
+  hockey: <IconHockey />,
+};
 
 const roundToTwoDecimals = (num = 0) => {
   return Math.round(num * 100) / 100;
@@ -24,7 +37,8 @@ export const MatchRow: React.FC<{ index: number; style: CSSProperties }> = ({
     <div style={style} className="match-row">
       <div className="match-header">
         <span className="match-sport">
-          <img src={`/${match.sport}-icon.svg`} alt={match.sport} />
+          {iconsMap[match.sport as keyof typeof iconsMap] || null}
+          {/* <img src={`/${match.sport}-icon.svg`} alt={match.sport} /> */}
           &nbsp;{match.sport}
         </span>
         <span className="match-status">{match.status}</span>
