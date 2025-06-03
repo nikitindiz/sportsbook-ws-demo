@@ -5,7 +5,7 @@ import { MatchesProvider } from "./contexts/MatchesContext";
 import { SelectedOddsProvider } from "./contexts/SelectedOddsContext";
 
 const wsUrl = import.meta.env.PROD
-  ? "wss://ws-test.nikitin-alex.com"
+  ? "wss://sportsbook-demo.nikitin-alex.com"
   : "ws://localhost:3000";
 
 function App() {
